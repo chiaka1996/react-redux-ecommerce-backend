@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const app = express();
-const port = process.env.PORT;
+// const port = process.env.PORT;
 
 
 app.use(cors());
@@ -32,5 +32,5 @@ connection.once('open',(res) => {
 
 app.use('/apis', api );
 
- const server = http.createServer(app);
-server.listen(port)
+//  const server = http.createServer(app);
+app.listen(process.env.PORT);s
