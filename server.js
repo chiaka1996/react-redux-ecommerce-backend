@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const app = express();
-// const port = process.env.PORT;
+const port = process.env.PORT;
 
 
 app.use(cors());
@@ -22,15 +22,10 @@ const connection = mongoose.connection;
 connection.once('open',(res) => {
     console.log("MongoDB connected");
 });
-// ,() => {
-//     console.log("MongoDB connected");
-// }
-
-// app.use('/images', express.static(path.join(__dirname, 'images')));
 
  const api = require('./routes/Allroutes');
 
 app.use('/apis', api );
 
-//  const server = http.createServer(app);
-app.listen(process.env.PORT);s
+ const server = http.createServer(app);
+server.listen(port);
