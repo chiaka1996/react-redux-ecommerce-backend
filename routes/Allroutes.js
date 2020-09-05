@@ -27,6 +27,8 @@ router.get('/get_products', productsControl.getProduct);
 
 router.post('/getUserOrders', allOrders.getOrder);
 
+router.get('/getallorders', allOrders.getAllOrders);
+
 router.post('/loginUser', authentication.frontendLogin);
 
 router.post('/allorders', allOrders.Allorders);

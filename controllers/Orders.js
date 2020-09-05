@@ -37,3 +37,19 @@ exports.getOrder = (req, res) => {
         }
       );
     }
+
+    //get all orders from database
+exports.getAllOrders = (req, res) => {
+  Orders.find().then(
+    (ord) => {
+      res.status(200).json(ord);
+    }
+  ).catch(
+    (error) => {
+      res.status(200).json({
+        error: error
+      });
+    }
+  );
+}
+
