@@ -18,7 +18,7 @@ router.get('/getshoeproduct', ShoeproductsControl.getShoeProduct);
 
 router.post('/editshoeproduct', ShoeproductsControl.EditShoeProduct);
 
-router.get('/deleteshoeproduct', ShoeproductsControl.deleteShoeProduct);
+router.post('/deleteshoeproduct', ShoeproductsControl.deleteShoeProduct);
 
 router.post('/add_product', productsControl.addProduct );
 

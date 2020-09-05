@@ -68,6 +68,7 @@ exports.getShoeProduct = (req, res) => {
   
   //Delete shoe product for sale
   exports.deleteShoeProduct = (req, res) => {
+    console.log(req.body);
     shoe_product.deleteOne({_id : req.body._id}).then(
       () => {
         res.status(200).json({
