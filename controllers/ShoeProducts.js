@@ -72,7 +72,7 @@ exports.getShoeProduct = (req, res) => {
     shoe_product.deleteOne({_id : req.body._id}).then(
       () => {
         res.status(200).json({
-          message : 'Deleted!'
+          message : 'Product deleted!, please refresh the page'
         });
       }
     ).catch(
