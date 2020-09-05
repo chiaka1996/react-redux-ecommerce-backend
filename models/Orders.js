@@ -9,6 +9,7 @@ const allOrders = new Orders({
     address : {type: String, required: true},
     phone : {type: Number, required: true},
     total : {type: Number, required:true},
+    status : {type:Boolean, required:true},
     order : {type: Array, required:true}
     
 },

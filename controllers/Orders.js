@@ -11,6 +11,7 @@ exports.Allorders = (req, res) => {
         phone : req.body.phone,
         address : req.body.address,
         total : req.body.total,
+        status: req.body.status,
         order : req.body.order
 
         
