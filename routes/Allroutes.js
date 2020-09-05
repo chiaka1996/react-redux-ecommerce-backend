@@ -12,6 +12,7 @@ const authentication = require('../controllers/Authentication/frontend_auth');
 
 const allOrders = require('../controllers/Orders');
 
+
 router.post('/addShoeproduct', ShoeproductsControl.addShoeForSale);
 
 router.get('/getshoeproduct', ShoeproductsControl.getShoeProduct);

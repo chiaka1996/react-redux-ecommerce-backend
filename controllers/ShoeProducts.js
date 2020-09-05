@@ -48,9 +48,9 @@ exports.getShoeProduct = (req, res) => {
       price : req.body.price,
       size : req.body.size,
       quantity : req.body.quantiy,
-      productType : req.body.quantity,
-      availableQuantity : req.body.quantity,
-      status : req.body.quantity,
+      productType : req.body.productType,
+      availableQuantity : req.body.availableQuantity,
+      status : req.body.status,
       description : req.body.description
     });
   
