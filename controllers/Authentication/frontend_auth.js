@@ -27,6 +27,16 @@ exports.frontendSignup = (req, res) => {
     errorArray.push('name should be only alphabeths');
   }
 
+  //check if username already exists
+  Signup.findOne({username}).then(
+    (user) => {
+      if(user){
+        errorArray.push('username already exists');
+      }
+    }).catch((err) => res.status(400).json(`Error: ${err}`));
+
+
+
   // check if email already exists
   Signup.findOne({ email }).then(
     (emailCheck) => {
