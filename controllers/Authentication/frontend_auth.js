@@ -12,7 +12,7 @@ exports.frontendSignup = (req, res) => {
 
   const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/gi;
 
-  const { firstname, lastname, username, phone, email, state, address, password } = req.body;
+  const { firstname, lastname, username, phone, email, state, address, password} = req.body;
 
   if (!firstname || !lastname || !username || !phone || !email || !state || !address || !password) {
     errorArray.push('please fill all fields');
@@ -41,9 +41,7 @@ exports.frontendSignup = (req, res) => {
   Signup.findOne({ email }).then(
     (emailCheck) => {
       if (emailCheck) {
-
         errorArray.push('email already exists');
-
       }
 
       if (!emailRegex.test(email)) {
@@ -61,7 +59,6 @@ exports.frontendSignup = (req, res) => {
       // hash the password and save to database
       bcrypt.hash(password, 10).then(
         (hash) => {
-
           const frontendUser = new Signup({
             firstname,
             lastname,
@@ -70,6 +67,8 @@ exports.frontendSignup = (req, res) => {
             email,
             state, 
             address,
+            gender: '',
+            birthday: '',
             password: hash
           });
           
@@ -99,7 +98,9 @@ exports.UpdateSignup = (req, res) => {
     email :  req.body.email,
     state :  req.body.state,
     address :  req.body.address,
-    password :  req.body.password
+    password :  req.body.password,
+    gender: req.body.gender,
+    birthday: req.body.birthday
   });
 
   Signup.updateOne({_id: req.body._id}, updateSignup)
@@ -167,6 +168,8 @@ exports.frontendLogin = (req, res) => {
             state : user.state,
             address : user.address,
             password : user.password,
+            gender: user.gender,
+            birthday: user.birthday,
             token,
             message: 'user logged in'
           });
