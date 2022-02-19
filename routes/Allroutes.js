@@ -33,6 +33,8 @@ router.get('/getallorders', allOrders.getAllOrders);
 
 router.post('/loginUser', authentication.frontendLogin);
 
+router.post('/changepassword', authentication.changePassword);
+
 router.post('/allorders', allOrders.Allorders);
 
 router.post('/registerUser', authentication.frontendSignup);

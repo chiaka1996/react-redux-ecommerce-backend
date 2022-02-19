@@ -4,6 +4,11 @@ const jwt = require('jsonwebtoken');
 
 const Signup = require('../../models/Authentication/frontendRegistration');
 
+// const  hashPasswords = async (password) => {
+//   let hashedPassword = await bcrypt.hash(password, 10)
+//   return hashedPassword
+// }
+
 exports.frontendSignup = (req, res) => {
 
   const errorArray = [];
@@ -177,9 +182,54 @@ exports.frontendLogin = (req, res) => {
       ).catch((err) => res.status(400).json(`Error: ${err}`));
     }
   ).catch((err) => res.status(400).json(`Error: ${err}`));
-
-
 };
+
+//change user password.
+exports.changePassword = async (req, res) => {
+  const {_id, oldPassword, newPassword} = req.body;
+  console.log(req.body)
+
+  if(!oldPassword || !newPassword) {
+    res.status(400).json("please fill all fields")
+  } 
+  else{
+    if(oldPassword.length < 7 || newPassword.length < 7){
+      res.status(400).json('password should be 7 or more characters')
+    }
+    else {
+      const response = await Signup.findOne({_id})
+      if(!response){
+        console.log(response)
+        return res.status(400).json('user does not exist')
+      }
+
+      const valid =  await bcrypt.compare(oldPassword, response.password)
+      if(!valid){
+        return res.status(400).json('Incorrecet old password')
+      }   
+
+      const hashedPassword = await bcrypt.hash(newPassword, 10)
+      if(!hashedPassword){
+       return res.status(500).json("something went wrong from our end. Try again later")
+      }
+      const passwordChange = new Signup({
+        _id,
+        password: hashedPassword
+      })
+
+      const updatePassword = await Signup.updateOne({_id}, passwordChange)
+      if(!updatePassword){
+        res.status(500).json("something went wrong from our end. Try agaain")
+      }
+      else{
+        res.status(201)
+        .json('password changed successfully');
+      }
+    }
+  }
+}
+
+// jhhjjdkksk
 
 
 
