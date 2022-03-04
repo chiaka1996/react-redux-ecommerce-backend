@@ -159,7 +159,7 @@ exports.frontendLogin = (req, res) => {
             gender: user.gender,
             birthday: user.birthday,
             token,
-            newsletter,
+            newsletter: user.newsletter,
             message: 'user logged in'
           });
         }
