@@ -40,6 +40,9 @@ const registration = new frontendRegistration({
     },
     birthday: {
         type: String
+    },
+    newsletter: {
+        type: Boolean
     }
     
 },

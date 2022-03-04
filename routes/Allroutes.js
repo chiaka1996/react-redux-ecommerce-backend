@@ -47,5 +47,7 @@ router.put('/updatesignup', authentication.UpdateSignup);
 
 router.post('/deleteProduct', productsControl.deleteProduct);
 
+router.post('/newsletter', authentication.newsletter);
+
 
 module.exports = router;

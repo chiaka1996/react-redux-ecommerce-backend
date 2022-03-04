@@ -4,11 +4,6 @@ const jwt = require('jsonwebtoken');
 
 const Signup = require('../../models/Authentication/frontendRegistration');
 
-// const  hashPasswords = async (password) => {
-//   let hashedPassword = await bcrypt.hash(password, 10)
-//   return hashedPassword
-// }
-
 exports.frontendSignup = (req, res) => {
 
   const errorArray = [];
@@ -28,7 +23,6 @@ exports.frontendSignup = (req, res) => {
   }
 
   if (!nameRegex.test(firstname)) {
-
     errorArray.push('name should be only alphabeths');
   }
 
@@ -39,7 +33,6 @@ exports.frontendSignup = (req, res) => {
         errorArray.push('username already exists');
       }
     }).catch((err) => res.status(400).json(`Error: ${err}`));
-
 
 
   // check if email already exists
@@ -74,7 +67,8 @@ exports.frontendSignup = (req, res) => {
             address,
             gender: '',
             birthday: '',
-            password: hash
+            password: hash,
+            newsletter: false
           });
           
           frontendUser.save()
@@ -83,13 +77,9 @@ exports.frontendSignup = (req, res) => {
 
         }
       ).catch((err) => res.status(400).json(`Error: ${err}`));
-
-
     }
 
   ).catch((err) => res.status(400).json(`Error: ${err}`));
-
-
 };
 
 //Update signup profile.
@@ -139,30 +129,23 @@ exports.getSignupDetails = (req, res) => {
 
 //login Route
 exports.frontendLogin = (req, res) => {
-
   const { email, password } = req.body;
 
   Signup.findOne({ email }).then(
     (user) => {
-
       if (!user) {
         return res.status(201).json({ message: 'email and password do not match' });
       } 
-
       bcrypt.compare(password, user.password).then(
         (valid) => {
-
           if (!valid) {
-
             return res.status(201).json({ message: 'email and password do not match' });
           }
-
           const token = jwt.sign(
             { userId: user._id },
             'RANDOM_TOKEN-SECRET_NUMBER',
             { expiresIn: '24h' }
           );
-
           res.status(200).json({
             _id : user._id,
             firstname: user.firstname,
@@ -176,6 +159,7 @@ exports.frontendLogin = (req, res) => {
             gender: user.gender,
             birthday: user.birthday,
             token,
+            newsletter,
             message: 'user logged in'
           });
         }
@@ -199,7 +183,6 @@ exports.changePassword = async (req, res) => {
     else {
       const response = await Signup.findOne({_id})
       if(!response){
-        console.log(response)
         return res.status(400).json('user does not exist')
       }
 
@@ -219,7 +202,8 @@ exports.changePassword = async (req, res) => {
 
       const updatePassword = await Signup.updateOne({_id}, passwordChange)
       if(!updatePassword){
-        res.status(500).json("something went wrong from our end. Try agaain")
+        res.status(500)
+        .json("something went wrong from our end. Try again")
       }
       else{
         res.status(201)
@@ -229,7 +213,30 @@ exports.changePassword = async (req, res) => {
   }
 }
 
-// jhhjjdkksk
+// update newsletter
+exports.newsletter = async (req, res) => {
+  console.log(req.body)
+  const {_id, newsletter} = req.body;
+
+  if(!_id || !typeof(newsletter) === 'boolean' || !newsletter){
+    return res.status(400).json('invalid request');
+  }
+
+  const newsletterChange = new Signup({
+    _id,
+    newsletter
+  })
+
+  const updateNewsletter = await Signup.updateOne({_id}, newsletterChange)
+  if(!updateNewsletter){
+    res.status(500)
+    .json("something went wrong from our end. Try again")
+  }
+  else{
+    res.status(201)
+    .json('newsletter updated successfully')
+  }
+}
 
 
 
