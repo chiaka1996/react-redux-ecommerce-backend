@@ -218,7 +218,7 @@ exports.newsletter = async (req, res) => {
   console.log(req.body)
   const {_id, newsletter} = req.body;
 
-  if(!_id || !typeof(newsletter) === 'boolean' || !newsletter){
+  if(!_id || typeof(newsletter) !== 'boolean' ){
     return res.status(400).json('invalid request');
   }
 
@@ -234,7 +234,11 @@ exports.newsletter = async (req, res) => {
   }
   else{
     res.status(201)
-    .json('newsletter updated successfully')
+    .json({
+      newsletter,
+      message: 'newsletter updated successfully'
+    }
+    )
   }
 }
 
