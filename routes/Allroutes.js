@@ -37,7 +37,7 @@ router.post('/changepassword', authentication.changePassword);
 
 router.post('/allorders', allOrders.Allorders);
 
-router.post('/registerUser', authentication.frontendSignup);
+router.post('/registeruser', authentication.frontendSignup);
 
 router.post('/getsignupdetails', authentication.getSignupDetails);
 

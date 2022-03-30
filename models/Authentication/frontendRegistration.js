@@ -23,17 +23,15 @@ const registration = new frontendRegistration({
         type : String, 
         required: true
     },
-    state : {
-        type : String, 
-        required: true
-    },
-    address : {
-        type : String, 
-        required: true
-    },
     password : { 
         type : String, 
         required : true 
+    },
+    state : {
+        type : String, 
+    },
+    address : {
+        type : String, 
     },
     gender: {
         type: String

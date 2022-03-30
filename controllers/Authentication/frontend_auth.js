@@ -1,85 +1,68 @@
-const bcrypt = require('bcrypt');
-
+const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken');
-
 const Signup = require('../../models/Authentication/frontendRegistration');
 
-exports.frontendSignup = (req, res) => {
-
-  const errorArray = [];
- 
-  const nameRegex = /^[a-z]+/gi;
-
+exports.frontendSignup = async (req, res) => {
+  try{
+  const errorArray = []; 
+  const nameRegex = /^[a-z]+/i;
   const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/gi;
+  const { firstname, lastname, username, phone, email, password} = req.body;
 
-  const { firstname, lastname, username, phone, email, state, address, password} = req.body;
-
-  if (!firstname || !lastname || !username || !phone || !email || !state || !address || !password) {
+  if (!firstname || !lastname || !username || !phone || !email || !password) {
     errorArray.push('please fill all fields');
+    return res.status(400).json({errorArray})
   }
-
-  if (firstname.length < 2 || lastname.length < 2 ) {
-    errorArray.push('names should be greater than one character');
-  }
-
-  if (!nameRegex.test(firstname)) {
+  if (!nameRegex.test(firstname) || !nameRegex.test(lastname)) {
     errorArray.push('name should be only alphabeths');
   }
-
+  if (!emailRegex.test(email)) {
+    errorArray.push('please input the correct email');
+  }
+  if(password.length < 7){
+    errorArray.push('password should be 7 or more characters');
+  }
   //check if username already exists
-  Signup.findOne({username}).then(
-    (user) => {
-      if(user){
-        errorArray.push('username already exists');
-      }
-    }).catch((err) => res.status(400).json(`Error: ${err}`));
+  const checkUsername = await Signup.findOne({username});
+  if(checkUsername){
+    errorArray.push('username already exists');
+    return res.status(400).json({errorArray})
+  }
+  //check if email already exists
+  const checkEmail = await Signup.findOne({email})
+  if(checkEmail){
+    errorArray.push("email already exists")
+    return res.status(400).json({errorArray})
+  }
 
-
-  // check if email already exists
-  Signup.findOne({ email }).then(
-    (emailCheck) => {
-      if (emailCheck) {
-        errorArray.push('email already exists');
-      }
-
-      if (!emailRegex.test(email)) {
-        errorArray.push('please input the correct email');
-      }
-
-      if(password.length < 7){
-        errorArray.push('password should be 7 or more characters');
-      }
-
-      if (errorArray.length > 0) {
-        return res.status(201).json({ errorArray });
-      
-      }
+  if(errorArray.length > 0){
+    return res.status(400).json({errorArray});
+  }   
       // hash the password and save to database
-      bcrypt.hash(password, 10).then(
-        (hash) => {
-          const frontendUser = new Signup({
-            firstname,
-            lastname,
-            username,
-            phone,
-            email,
-            state, 
-            address,
-            gender: '',
-            birthday: '',
-            password: hash,
-            newsletter: false
-          });
-          
-          frontendUser.save()
-            .then(() => res.json('user registered'))
-            .catch((err) => res.status(400).json(`Error: ${err}`));
-
-        }
-      ).catch((err) => res.status(400).json(`Error: ${err}`));
+      const hashPassword = await bcrypt.hash(password, 10)
+      if(hashPassword){
+        frontendUser = new Signup({
+          firstname,
+          lastname,
+          username,
+          phone,
+          email,
+          state: '',
+          address: '',
+          gender: '',
+          birthday: '',
+          password: hashPassword,
+          newsletter: false
+      })
     }
-
-  ).catch((err) => res.status(400).json(`Error: ${err}`));
+      const saveUser = await frontendUser.save()
+      if(saveUser){
+        res.status(201).json({message: "user registered successfuly"})
+      }
+  }
+  catch(err){
+   return res.status(500).json({message: 'something went wrong. check your network connection and retry'})
+  }
 };
 
 //Update signup profile.
@@ -128,44 +111,49 @@ exports.getSignupDetails = (req, res) => {
 
 
 //login Route
-exports.frontendLogin = (req, res) => {
-  const { email, password } = req.body;
-
-  Signup.findOne({ email }).then(
-    (user) => {
-      if (!user) {
-        return res.status(201).json({ message: 'email and password do not match' });
-      } 
-      bcrypt.compare(password, user.password).then(
-        (valid) => {
-          if (!valid) {
-            return res.status(201).json({ message: 'email and password do not match' });
+exports.frontendLogin = async (req, res) => {
+  try{
+       const { email, password } = req.body;
+       const user = await Signup.findOne({email})
+          if(!user){
+            return res.status(400).json({
+              message: "email and password do not match"
+            })
           }
-          const token = jwt.sign(
-            { userId: user._id },
-            'RANDOM_TOKEN-SECRET_NUMBER',
-            { expiresIn: '24h' }
-          );
-          res.status(200).json({
-            _id : user._id,
-            firstname: user.firstname,
-            lastname : user.lastname,
-            username : user.username,
-            phone : user.phone,
-            email : user.email,
-            state : user.state,
-            address : user.address,
-            password : user.password,
-            gender: user.gender,
-            birthday: user.birthday,
-            token,
-            newsletter: user.newsletter,
-            message: 'user logged in'
-          });
-        }
-      ).catch((err) => res.status(400).json(`Error: ${err}`));
-    }
-  ).catch((err) => res.status(400).json(`Error: ${err}`));
+      const checkPassword = await bcrypt.compare(password, user.password)
+          if(!checkPassword){
+            return res.status(400).json({
+              message: "email and password do not match"
+            })
+          }
+      const token = jwt.sign(
+        {userId: user._id},
+        'RANDOM_TOKEN-SECRET_NUMBER',
+        { expiresIn: '24h' }
+      );
+      res.status(200).json({
+        _id : user._id,
+        firstname: user.firstname,
+        lastname : user.lastname,
+        username : user.username,
+        phone : user.phone,
+        email : user.email,
+        state : user.state,
+        address : user.address,
+        password : user.password,
+        gender: user.gender,
+        birthday: user.birthday,
+        token,
+        newsletter: user.newsletter,
+        message: 'user logged in'
+    });
+
+  }
+  catch(err){
+    res.status(500).json({
+      message: "don't panic. Check your network connection"
+    })
+  }
 };
 
 //change user password.
@@ -215,7 +203,6 @@ exports.changePassword = async (req, res) => {
 
 // update newsletter
 exports.newsletter = async (req, res) => {
-  console.log(req.body)
   const {_id, newsletter} = req.body;
 
   if(!_id || typeof(newsletter) !== 'boolean' ){
