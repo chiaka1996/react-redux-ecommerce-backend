@@ -57,11 +57,15 @@ exports.frontendSignup = async (req, res) => {
     }
       const saveUser = await frontendUser.save()
       if(saveUser){
-        res.status(201).json({message: "user registered successfuly"})
+        res.status(201).json({
+          message: "user registered successfuly"
+        })
       }
   }
   catch(err){
-   return res.status(500).json({message: 'something went wrong. check your network connection and retry'})
+   return res.status(500).json({
+     message: 'something went wrong. check your network connection and retry'
+    })
   }
 };
 
