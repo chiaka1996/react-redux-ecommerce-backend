@@ -70,31 +70,60 @@ exports.frontendSignup = async (req, res) => {
 };
 
 //Update signup profile.
-exports.UpdateSignup = (req, res) => {
-  const updateSignup = new Signup({
-    _id : req.body._id,
-    firstname : req.body.firstname,
-    lastname :  req.body.lastname,
-    username :  req.body.username,
-    phone :  req.body.phone,
-    email :  req.body.email,
-    state :  req.body.state,
-    address :  req.body.address,
-    password :  req.body.password,
-    gender: req.body.gender,
-    birthday: req.body.birthday
-  });
-
-  Signup.updateOne({_id: req.body._id}, updateSignup)
-  .then(() => {
-    res.status(201).json({
-      message : "updated successfully"
-    })
-  }).catch(
-    (err) => {
-      res.status(200).json("something went wrong, please check your network connection");
+exports.UpdateSignup = async (req, res) => {
+  try{
+    const errorArray = []; 
+    const nameRegex = /^[a-z]+/i;
+    const userRegex = /^[a-z]+[0-9]*/i;
+    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/i;
+   
+    const {_id, firstname, lastname, username, phone, email, state, address, password, gender, birthday} = req.body;
+    if(!firstname || !lastname || !username || !email || !phone){
+      errorArray.push('please fill all required fields')
+      return res.status(400).json({
+        error: errorArray
+      })
     }
-  );
+    if (!nameRegex.test(firstname) || !nameRegex.test(lastname)) {
+      errorArray.push('name should be only alphabeths');
+    }
+    if(!userRegex.test(username) || username.length > 7 || username.length < 3){
+      errorArray.push('username should be greater than 3 and less than 8 characters and alphanumeric')
+    }
+    if (!emailRegex.test(email)) {
+      errorArray.push('please input the correct email');
+    }
+    if(errorArray.length > 0){
+      return res.status(400).json({
+        error: errorArray
+      });
+    }
+
+    const updateSignup = new Signup({
+      _id,
+      firstname,
+      lastname,
+      username,
+      phone,
+      email,
+      state,
+      address,
+      password,
+      gender,
+      birthday
+    });
+    const updateData = await Signup.updateOne({_id}, updateSignup)
+    if(updateData){
+      res.status(201).json({
+        message: "updated successfully"
+      })
+    }
+  }
+  catch(err){
+    res.status(500).json({
+      error: "something went wrong. check your internet connection"
+    })
+  }
 }
 
 
