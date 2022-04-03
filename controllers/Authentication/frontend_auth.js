@@ -81,7 +81,7 @@ exports.UpdateSignup = async (req, res) => {
     if(!firstname || !lastname || !username || !email || !phone){
       errorArray.push('please fill all required fields')
       return res.status(400).json({
-        error: errorArray
+        message: errorArray
       })
     }
     if (!nameRegex.test(firstname) || !nameRegex.test(lastname)) {
@@ -95,7 +95,7 @@ exports.UpdateSignup = async (req, res) => {
     }
     if(errorArray.length > 0){
       return res.status(400).json({
-        error: errorArray
+        message: errorArray
       });
     }
 
@@ -121,7 +121,7 @@ exports.UpdateSignup = async (req, res) => {
   }
   catch(err){
     res.status(500).json({
-      error: "something went wrong. check your internet connection"
+      message: "something went wrong. check your internet connection"
     })
   }
 }
