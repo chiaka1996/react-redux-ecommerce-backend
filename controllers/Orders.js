@@ -11,8 +11,6 @@ exports.Allorders = async (req, res) => {
           res.status(400).json({
             message: 'please fill all fields'
           })
-          console.log(userId,username,firstname, lastname, phone, address, total,
-            status, order, bus_stop, paymentType, country, local_gov_area, state, email)
           return
         }
 
@@ -44,7 +42,7 @@ exports.Allorders = async (req, res) => {
     }
     catch(err){
       res.status(500).json({
-        message: {err}
+        message: "please, check your network connection"
       })
     }
 }
