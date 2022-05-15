@@ -1,24 +1,52 @@
 let Orders = require('../models/Orders');
 
 //add orders to the database
-exports.Allorders = (req, res) => {
-    const all_Orders = new Orders({
-        
-        username : req.body.username,
-        firstname : req.body.firstname,
-        lastname : req.body.lastname,
-        phone : req.body.phone,
-        address : req.body.address,
-        total : req.body.total,
-        status: req.body.status,
-        order : req.body.order
+exports.Allorders = async (req, res) => {
+    try{
+      const {userId, username, firstname, lastname, phone, address, total,
+      status, order, bus_stop, paymentType, country, local_gov_area, state, email} = req.body;
 
-        
-    });
+      if(!userId || !username || !firstname || !lastname || !phone || !address || !total || !order || !bus_stop|| !paymentType || !country || !local_gov_area || !state || !email){
 
-     all_Orders.save()
-    .then(() => res.status(201).json('Order Succefull'))
-    .catch(error => res.status(400).json('Error : ' + error));
+          res.status(400).json({
+            message: 'please fill all fields'
+          })
+          console.log(userId,username,firstname, lastname, phone, address, total,
+            status, order, bus_stop, paymentType, country, local_gov_area, state, email)
+          return
+        }
+
+      const allOrders = new Orders({
+        userId,
+        username,
+        firstname,
+        lastname,
+        phone,
+        address,
+        total,
+        status,
+        order,
+        bus_stop,
+        paymentType,
+        country,
+        local_gov_area,
+        state,
+        email
+      })
+
+      const saveOrder = await allOrders.save();
+      if(saveOrder){
+        res.status(201).json({
+          message: 'order received successfully'
+        })
+      }
+
+    }
+    catch(err){
+      res.status(500).json({
+        message: {err}
+      })
+    }
 }
 
 //get specific user order from database

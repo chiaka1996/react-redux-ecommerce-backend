@@ -2,8 +2,6 @@ let shoe_product = require('../models/AddShoesForSale');
 
 //add shoe products for sale to the datatbase
 exports.addShoeForSale = (req, res) => {
-
-    console.log(req.body);
     const shoe_added = new shoe_product({
         image : req.body.image,
         design: req.body.design,
@@ -16,12 +14,10 @@ exports.addShoeForSale = (req, res) => {
         description : req.body.description
 
     });
-
      shoe_added.save()
     .then(() => res.status(201).json('product added!'))
     .catch(error => res.status(400).json('Error : ' + error));
 }
-
 
 // get product shoe for sale from the database.
 exports.getShoeProduct = (req, res) => {
@@ -37,7 +33,6 @@ exports.getShoeProduct = (req, res) => {
       }
     );
   }
-  
   
   //edit shoe products for sale.
   exports.EditShoeProduct = (req, res) => {

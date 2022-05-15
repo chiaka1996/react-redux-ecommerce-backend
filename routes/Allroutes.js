@@ -1,17 +1,11 @@
 const router = require('express').Router();
-
 const Authuser = require('../middleware/Authuser');
-
 const productsControl = require('../controllers/handleProducts');
-
 const ShoeproductsControl = require('../controllers/ShoeProducts');
-
 // const multer = require('../middleware/multer-config');
-
 const authentication = require('../controllers/Authentication/frontend_auth');
-
 const allOrders = require('../controllers/Orders');
-
+const recenltyViewed = require('../controllers/RecentlyViewed')
 
 router.post('/addShoeproduct', ShoeproductsControl.addShoeForSale);
 
@@ -49,5 +43,6 @@ router.post('/deleteProduct', productsControl.deleteProduct);
 
 router.post('/newsletter', authentication.newsletter);
 
+router.post('/recentlyviewed', recenltyViewed.addRecentlyViewed)
 
 module.exports = router;
