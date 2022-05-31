@@ -15,7 +15,11 @@ app.use(express.json());
 //app.use(expressfileupload());
 
 const uri = process.env.ATLAS_URI;
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex:true});
+mongoose.connect(uri, { 
+    useNewUrlParser: true, 
+    useUnifiedTopology: true, 
+    useCreateIndex:true
+});
 const connection = mongoose.connection;
 connection.once('open',(res) => {
     console.log("MongoDB connected");

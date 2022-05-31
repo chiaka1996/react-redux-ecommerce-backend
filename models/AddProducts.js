@@ -1,11 +1,16 @@
 const mongoose = require('mongoose');
-const AddProductSchema = mongoose.Schema;
-const products = new AddProductSchema({
+const AddProducts= mongoose.Schema;
+
+const AllProducts = new AddProducts({
     image: {
         type: String, 
         required: true
     },
-    productName: {
+    cloudinaryId:{
+        type: String,
+        required: true
+    },
+    productType: {
         type: String, 
         required: true
     },
@@ -19,28 +24,28 @@ const products = new AddProductSchema({
     },
     quantity: {
         type: Number, 
-        required: true}
-        ,
-    productType: {
-        type: String
+        required: true
     },
-    status: {
-        type: Boolean
-    }, 
+    subProduct: {
+        type: String,
+        required: true
+    },
     availableQuantity: {
         type: Number, 
         required: true
     },
+    status: {
+        type: Boolean
+    }, 
     description: {
         type: String, 
         required: true
-    }
-    
+    }  
 },
 {
     timestamps : true
 }); 
 
-const Added_product = mongoose.model('Added_product', products);
+const Products = mongoose.model('products', AllProducts);
 
-module.exports = Added_product;
+module.exports = Products;

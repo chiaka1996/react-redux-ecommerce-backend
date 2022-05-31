@@ -2,10 +2,12 @@ const router = require('express').Router();
 const Authuser = require('../middleware/Authuser');
 const productsControl = require('../controllers/handleProducts');
 const ShoeproductsControl = require('../controllers/ShoeProducts');
+const addProduct = require('../controllers/Addproducts');
 // const multer = require('../middleware/multer-config');
 const authentication = require('../controllers/Authentication/frontend_auth');
 const allOrders = require('../controllers/Orders');
 const recenltyViewed = require('../controllers/RecentlyViewed')
+const multer = require("../middleware/multer-config")
 
 router.post('/addShoeproduct', ShoeproductsControl.addShoeForSale);
 
@@ -14,6 +16,8 @@ router.get('/getshoeproduct', ShoeproductsControl.getShoeProduct);
 router.post('/editshoeproduct', ShoeproductsControl.EditShoeProduct);
 
 router.post('/deleteshoeproduct', ShoeproductsControl.deleteShoeProduct);
+
+router.post('/addproducts', multer.single('image'), addProduct.addProducts)
 
 router.post('/add_product', productsControl.addProduct );
 
