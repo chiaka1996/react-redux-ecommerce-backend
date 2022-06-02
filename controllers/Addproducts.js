@@ -32,13 +32,12 @@ exports.addProducts = async (req, res) => {
             if(saveProduct){
                 res.status(200).json({
                     message: 'product saved successfully',
-                    product
                 })
             }
         }       
     }
     catch(error){
-        res.status(400).json({
+        res.status(500).json({
             message: 'please check your internet connection'
         })
     }
