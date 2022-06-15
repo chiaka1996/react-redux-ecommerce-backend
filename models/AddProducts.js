@@ -10,6 +10,10 @@ const AllProducts = new AddProducts({
         type: String,
         required: true
     },
+    productName: {
+        type: String,
+        required: true
+    },
     productType: {
         type: String, 
         required: true

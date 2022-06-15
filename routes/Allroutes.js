@@ -18,6 +18,7 @@ router.post('/editshoeproduct', ShoeproductsControl.EditShoeProduct);
 router.post('/deleteshoeproduct', ShoeproductsControl.deleteShoeProduct);
 
 router.post('/addproducts', multer.single('image'), addProduct.addProducts)
+router.get('/getproduct', addProduct.getCloths)
 
 router.post('/add_product', productsControl.addProduct );
 

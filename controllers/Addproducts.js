@@ -3,6 +3,7 @@ const products = require('../models/AddProducts')
 
 exports.addProducts = async (req, res) => {
     try{
+        console.log(req.body)
         const {productType, subProduct, productName, description, size, availableQuantity, price} = req.body;
         if(!productType || !subProduct || !productName || !description || !size || !availableQuantity || !price){
             res.status(400).json({
@@ -40,5 +41,57 @@ exports.addProducts = async (req, res) => {
         res.status(500).json({
             message: 'please check your internet connection'
         })
+    }
+}
+
+// get cloths in product
+exports.getCloths = async (req, res) => {
+    try{
+        let {type, page, limit} = req.query
+        let result = {}
+        page = parseInt(page)
+        limit = parseInt(limit)
+        const startIndex = (page - 1) * limit
+        const endIndex = page * limit
+        if(!type || !page || !limit){
+            res.status(400).json({
+                message: 'please input all parameters'
+            })
+            return
+        }
+
+        result.current = page
+
+        if(endIndex < await products.countDocuments().exec()){
+            result.next = {
+                page: page + 1,
+                limit
+            }
+        }
+
+        if(startIndex > 0){
+            result.previous ={
+                page: page - 1,
+                limit: limit
+            }
+        }
+
+        const noOfProducts = await products.collection.find({productType: type}).count()
+        if(noOfProducts){
+            result.totalProduct = noOfProducts
+        }
+
+
+        const results = await products.find({productType: type}).limit(limit).skip(startIndex).exec()
+        if(results){
+            result.results = results
+            res.status(200).json(result)
+        }
+
+    }
+    catch(err){
+       res.status(500).json({
+           message: err.message
+       })
     }
 }
