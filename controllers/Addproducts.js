@@ -3,7 +3,6 @@ const products = require('../models/AddProducts')
 
 exports.addProducts = async (req, res) => {
     try{
-        console.log(req.body)
         const {productType, subProduct, productName, description, size, availableQuantity, price} = req.body;
         if(!productType || !subProduct || !productName || !description || !size || !availableQuantity || !price){
             res.status(400).json({
@@ -44,8 +43,8 @@ exports.addProducts = async (req, res) => {
     }
 }
 
-// get cloths in product
-exports.getCloths = async (req, res) => {
+// get product
+exports.getProducts = async (req, res) => {
     try{
         let {type, page, limit} = req.query
         let result = {}
@@ -95,3 +94,57 @@ exports.getCloths = async (req, res) => {
        })
     }
 }
+
+//edit and update product
+exports.EditProduct = async (req, res) => {
+    try{
+        const {_id, productType, subProduct, productName, description, size, availableQuantity, price} = req.body;
+        if(!productType || !subProduct || !productName || !description || !size || !availableQuantity || !price){
+            res.status(400).json({
+                message: 'please fill all fields'
+            })
+            return
+        }
+
+        const updateProduct = new products({
+        _id,
+        productType,
+        price,
+        size,
+        availableQuantity,
+        productName,
+        description,
+        subProduct
+  });
+
+  const response = await products.updateOne({_id}, updateProduct)
+  if(response){
+    res.status(200).json({
+        message: 'product updated successfully',
+    })
+  }
+}
+catch(error){
+    res.status(500).json({
+        message: error.message
+    })
+}
+}
+
+  //Delete shoe product for sale
+  exports.DeleteProduct = async (req, res) => {
+      try{
+        const deleteProduct = await products.deleteOne({_id:req.body._id})
+        if(deleteProduct){
+            res.status(200).json({
+                message : 'Product deleted successfully'
+              });
+        }
+
+      }
+      catch(error){
+        res.status(500).json({
+            message: error.message
+        })
+      }
+  }
