@@ -45,6 +45,8 @@ router.post('/registeruser', authentication.frontendSignup);
 
 router.post('/getsignupdetails', authentication.getSignupDetails);
 
+router.get('/allusers', authentication.allUsers)
+
 router.put('/editproduct', productsControl.EditProduct);
 
 router.put('/updatesignup', authentication.UpdateSignup);

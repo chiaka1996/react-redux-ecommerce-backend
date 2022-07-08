@@ -142,6 +142,55 @@ exports.getSignupDetails = (req, res) => {
   );
 }
 
+//get all users details
+exports.allUsers = async (req, res) => {
+  try{
+    let {page, limit} = req.query
+    let result = {}
+        page = parseInt(page)
+        limit = parseInt(limit)
+        const startIndex = (page - 1) * limit
+        const endIndex = page * limit
+        if(!page || !limit){
+          res.status(400).json({
+              message: 'please input all parameters'
+          })
+          return
+      }
+
+      result.current = page
+
+      if(endIndex < await  Signup.countDocuments().exec()){
+        result.next = {
+            page: page + 1,
+            limit
+        }
+    }
+
+    if(startIndex > 0){
+      result.previous ={
+          page: page - 1,
+          limit: limit
+      }
+  }
+
+  const noOfProducts = await  Signup.collection.find().count()
+        if(noOfProducts){
+            result.totalProduct = noOfProducts
+        }
+
+    const response = await Signup.find().limit(limit).skip(startIndex).exec()
+    if(response){
+      result.results = response
+      res.status(200).json(result)
+  }
+
+  }
+  catch(error){
+    res.status(500).json(error.message)
+  }
+}
+
 
 //login Route
 exports.frontendLogin = async (req, res) => {

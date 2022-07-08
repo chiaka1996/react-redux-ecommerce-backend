@@ -131,7 +131,7 @@ catch(error){
 }
 }
 
-  //Delete shoe product for sale
+  //Delete product for sale
   exports.DeleteProduct = async (req, res) => {
       try{
         const deleteProduct = await products.deleteOne({_id:req.body._id})
